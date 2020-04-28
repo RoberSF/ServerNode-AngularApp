@@ -49,7 +49,7 @@ app.post('/', (request, response)=> {
 
     usuario.save((error,usuarioGuardado) => {
         if ( error ) {
-            return response.status(500).json({
+            return response.status(400).json({
                 ok: false,
                 mensaje: 'Error al guardar usario',
                 errors: error
