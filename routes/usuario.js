@@ -105,6 +105,7 @@ app.put('/:id', (request,response) => {
             }
 
             usuarioGuardado.password = ':)' // no es que elimine la contraseña, si no, que es como una especie de exclusión para que no se muestre
+                                            // lo guardo dentro del callback del save ya que el save, ya ocurrió.
             response.status(200).json({
                 ok: true,
                 usuario: usuarioGuardado
@@ -116,7 +117,27 @@ app.put('/:id', (request,response) => {
 
 });
 
+//***********************************eliminar un usuario***********************************
 
+app.delete('/:id', (req,resp) => {
+
+    var id = req.params.id; // el id tiene que ser el mismo nombre que aparece en la url :id
+
+    Usuario.findByIdAndRemove(id, (error, usuarioBorrado) => {
+        if ( error ) {
+            return resp.status(500).json({
+                ok: false,
+                mensaje: 'Error al borrar usario',
+                errors: error
+            });
+        }
+
+        resp.status(201).json({
+            ok: true,
+            usuario: usuarioBorrado
+        });
+    })
+})
 
 module.exports = app; // exporto las rutas hacia afuera. Tendría que importarlo donde lo uso
 
