@@ -43,7 +43,7 @@ app.post('/', (request, response)=> {
     var usuario = new Usuario({  // con esto creamos esta referencia para despues guardarlo
         nombre: body.nombre,
         email: body.email,
-        password: bcrypt.hashSync("body.password", 10), // encriptación automática
+        password: bcrypt.hashSync(body.password, 10), // encriptación automática
         img: body.img,
         role: body.role
     });

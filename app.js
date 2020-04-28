@@ -32,6 +32,8 @@ var appRoutes = require('./routes/app'); // el path dónde están las rutas
 
 var usuarioRoutes = require('./routes/usuario')
 
+var usuarioLogin = require('./routes/login')
+
 
 
 
@@ -40,6 +42,7 @@ var usuarioRoutes = require('./routes/usuario')
 
 
 app.use('/usuario', usuarioRoutes); // se pone arriba por que si no entrarían por el de abajo
+app.use('/login', usuarioLogin); // se pone arriba por que si no entrarían por el de abajo
 app.use('/', appRoutes); // middleware. "Cualquier match con '/' , ejecuta appRoutes"
 
 
