@@ -1,6 +1,7 @@
 // Requires (Importación de librerías para que funcione algo)
 var express = require('express');
 var app = express();
+var bcrypt = require('bcryptjs'); // Librería para encriptar la contraseña
 var Usuario = require('../models/usuario'); // me permite usar todo lo que hay en usuarios.js
 
 
@@ -42,7 +43,7 @@ app.post('/', (request, response)=> {
     var usuario = new Usuario({  // con esto creamos esta referencia para despues guardarlo
         nombre: body.nombre,
         email: body.email,
-        password: body.password,
+        password: bcrypt.hashSync("body.password", 10), // encriptación automática
         img: body.img,
         role: body.role
     });
