@@ -2,8 +2,11 @@
 var express = require('express');
 var app = express();
 var bcrypt = require('bcryptjs'); // Librería para encriptar la contraseña
-var jwt = require('jsonwebtoken') // librería para crear el token 
 var Usuario = require('../models/usuario'); // me permite usar todo lo que hay en usuarios.js
+var jwt = require('jsonwebtoken') // librería para crear el token 
+var SEED = require('../config/config').SEED;
+
+
 
 app.post('/',(request,response) => {
 
@@ -38,7 +41,7 @@ app.post('/',(request,response) => {
 
         // Crear token
         usuarioDB.password = ':)'
-        var token = jwt.sign({usuario: usuarioDB}, '@este-es-mi-seed', {expiresIn: 14400})
+        var token = jwt.sign({usuario: usuarioDB}, SEED, {expiresIn: 14400})
                             // le mando una data // la semilla de mi back,lo que yo quiera // el tiempo de validez 14400=4h
 
         response.status(200).json({

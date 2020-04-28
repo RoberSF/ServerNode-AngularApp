@@ -3,7 +3,8 @@ var express = require('express');
 var app = express();
 var bcrypt = require('bcryptjs'); // Librería para encriptar la contraseña
 var Usuario = require('../models/usuario'); // me permite usar todo lo que hay en usuarios.js
-
+var jwt = require('jsonwebtoken') // librería para crear el token 
+var SEED = require('../config/config').SEED;
 
 
 
@@ -35,6 +36,32 @@ var Usuario = require('../models/usuario'); // me permite usar todo lo que hay e
         }) )
     })
 
+
+
+//***********************************Verificar Token con middleware********************************************
+// Se pone aquí por que a partir de aquí, las peticiones que yo hagan se van a validar primero aquí
+
+app.use('/', (request,response,next) => {
+
+    var token = request.query.token;
+
+    jwt.verify (token, SEED, (error, decoded )=> {
+
+        if (error) {
+            return response.status(401).json({
+                ok: false,
+                mensaje: 'Token incorrecto',
+                errors: error
+            });
+        }
+
+        next();
+
+
+    });
+
+});
+
 //***************************************** Crear usuarios******************************************************
 app.post('/', (request, response)=> {
 
@@ -52,7 +79,7 @@ app.post('/', (request, response)=> {
         if ( error ) {
             return response.status(400).json({
                 ok: false,
-                mensaje: 'Error al guardar usario',
+                mensaje: 'Error al guardar usuario',
                 errors: error
             });
         }
