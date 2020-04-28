@@ -66,6 +66,56 @@ app.post('/', (request, response)=> {
 
 })
 
+// *****************************************Actualizar Datos*************************
+app.put('/:id', (request,response) => {
+
+    var id = request.params.id; // para recibirlo de la URL 
+    var body = request.body; 
+
+    Usuario.findById(id, (error, usuario) => { // está función es algo de mongoose. Usuario hace referencia al model. El usuario de dentro del callback es el usuario que encuentra por el id
+        if ( error ) {
+            return response.status(500).json({
+                ok: false,
+                mensaje: 'Error al buscar usario',
+                errors: error
+            });
+        }
+
+        if ( !usuario ) { // sí, el usuario viene null 
+            
+                return response.status(400).json({
+                    ok: false,
+                    mensaje: 'El usuario con el' + id + 'no existe',
+                    errors: {menssage: 'No existe con este Id'}
+                });
+            
+        }
+
+        usuario.nombre = body.nombre;
+        usuario.email = body.email;
+        usuario.role = body.role;
+
+        usuario.save((error,usuarioGuardado) => {
+            if ( error ) {
+                return response.status(400).json({
+                    ok: false,
+                    mensaje: 'Error al actualizar usario',
+                    errors: error
+                });
+            }
+
+            usuarioGuardado.password = ':)' // no es que elimine la contraseña, si no, que es como una especie de exclusión para que no se muestre
+            response.status(200).json({
+                ok: true,
+                usuario: usuarioGuardado
+            });
+    
+        });
+        
+    });
+
+});
+
 
 
 module.exports = app; // exporto las rutas hacia afuera. Tendría que importarlo donde lo uso
