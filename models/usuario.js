@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'); // para trabajar con mongoose y sus funciones primero lo importamos
 
 
-var Schema = mongose.Schema; // Para definir esquemas primero hay que importar
+var Schema = mongoose.Schema; // Para definir esquemas primero hay que importar
 
 
 var usuarioSchema = new Schema({
@@ -16,3 +16,6 @@ var usuarioSchema = new Schema({
 module.exports = mongoose.model('Usuario', usuarioSchema)
 // para poder usar este archivo fuera. "Usuario" es el nombre que le doy a este esquema afuera
 
+
+
+// 
