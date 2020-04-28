@@ -6,7 +6,11 @@ var Usuario = require('../models/usuario'); // me permite usar todo lo que hay e
 
 
 
-// ********************RUTAS*******************************
+//****************************************************RUTAS*******************************
+//*****************************************************************************************
+
+
+//*******************************************Obtener usuarios********************************
  app.get('/', (request, response, next) => {
 
         Usuario.find({}, ('nombre email img role') //el .find es por mongoo. Las caracteristicas es para que se muestre sólo eso. Yo no quiero que me enseñe su password por ejemplo
@@ -29,6 +33,39 @@ var Usuario = require('../models/usuario'); // me permite usar todo lo que hay e
     
         }) )
     })
+
+//***************************************** Crear usuarios******************************************************
+app.post('/', (request, response)=> {
+
+    var body = request.body; // esto sólo va a funcionar si tengo el body-parser
+
+    var usuario = new Usuario({  // con esto creamos esta referencia para despues guardarlo
+        nombre: body.nombre,
+        email: body.email,
+        password: body.password,
+        img: body.img,
+        role: body.role
+    });
+
+    usuario.save((error,usuarioGuardado) => {
+        if ( error ) {
+            return response.status(500).json({
+                ok: false,
+                mensaje: 'Error al guardar usario',
+                errors: error
+            });
+        }
+        response.status(201).json({
+            ok: true,
+            usuarios: usuarioGuardado
+        });
+
+    });
+
+
+})
+
+
 
 module.exports = app; // exporto las rutas hacia afuera. Tendría que importarlo donde lo uso
 

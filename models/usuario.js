@@ -5,11 +5,11 @@ var Schema = mongoose.Schema; // Para definir esquemas primero hay que importar
 
 
 var usuarioSchema = new Schema({
-    nombre:{type: String, require: [true, 'El nombre es necesario']}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
-    email:{type: String, unique:true, require: [true, 'El correo es necesario']}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
-    password:{type: String, require: [true, 'El password es necesario']}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
-    img:{type: String, requiere:false}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
-    role:{type: String, requiere:true,default:'USER_ROLE'}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
+    nombre:{type: String, required: [true, 'El nombre es necesario']}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
+    email:{type: String, unique:true, required: [true, 'El correo es necesario']}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
+    password:{type: String, required: [true, 'El password es necesario']}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
+    img:{type: String, requiered:false}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
+    role:{type: String, requiered:true,default:'USER_ROLE'}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
 });
 
 
