@@ -41,27 +41,51 @@ var SEED = require('../config/config').SEED;
 //***********************************Verificar Token con middleware********************************************
 // Se pone aquí por que a partir de aquí, las peticiones que yo hagan se van a validar primero aquí
 
-app.use('/', (request,response,next) => {
 
-    var token = request.query.token;
+//Esta es cuando mandas el token por la url
 
-    jwt.verify (token, SEED, (error, decoded )=> {
+// app.use('/', (request,response,next) => {
 
-        if (error) {
-            return response.status(401).json({
-                ok: false,
-                mensaje: 'Token incorrecto',
-                errors: error
-            });
-        }
+//     var token = request.query.token;
 
-        next();
+//     jwt.verify (token, SEED, (error, decoded )=> {
+
+//         if (error) {
+//             return response.status(401).json({
+//                 ok: false,
+//                 mensaje: 'Token incorrecto',
+//                 errors: error
+//             });
+//         }
+
+//         next();
 
 
+//     });
+
+// });
+
+
+
+// ==========================================
+// Enviar token por headers
+//(Acordarse en postman de ponerlo en authorizacion, content-type)
+// ==========================================
+exports.verificaToken = function(req, res, next) {
+    // var token = req.query.token;
+    var token = req.headers.authorization;
+    jwt.verify(token, SEED, (err, decoded) => {
+    if (err) {
+    return res.status(401).json({
+    ok: false,
+    mensaje: 'Token incorrecto',
+    errors: err
     });
-
-});
-
+    }
+    req.usuario = decoded.usuario;
+    next();
+    });
+   }
 //***************************************** Crear usuarios******************************************************
 app.post('/', (request, response)=> {
 
