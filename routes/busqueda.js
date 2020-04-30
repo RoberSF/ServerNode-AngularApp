@@ -9,6 +9,14 @@ var Usuario = require('../models/usuario');
 
 
 // ********************RUTAS*******************************
+
+
+
+
+//*****************************************************************************************************************
+//                                      Busqueda General
+//*****************************************************************************************************************
+
 app.get('/todo/:busqueda', (request, response, next) => {
 
     var busqueda = request.params.busqueda; //esto es lo que la persona está escribiendo en ":busqueda"
@@ -32,6 +40,51 @@ app.get('/todo/:busqueda', (request, response, next) => {
     })
 }); // hasta aquí método get
 
+//*****************************************************************************************************************
+//                                      Busqueda por colección
+//*****************************************************************************************************************
+
+app.get('/coleccion/:tabla/:busqueda', (request, response) => {
+
+    var busqueda = request.params.busqueda;
+    var tabla = request.params.tabla;
+    var regex = new RegExp(busqueda, 'i');
+
+    var promesa;
+    switch (tabla) {
+
+        case 'usuarios':
+            promesa = buscarUsuario(busqueda, regex)
+        break;
+        case 'medicos':
+            promesa = buscarMedicos(busqueda, regex)
+        break;
+        case 'hospitales':
+            promesa = buscarHospitales(busqueda, regex)
+        break;
+
+        default:
+            response.status(400).json({ 
+                ok: false,
+                message: 'Los tipos de busca son usuarios, medicos u hospitales'
+    
+            });
+
+    }
+
+    promesa.then(data => {
+        response.status(200).json({ 
+            ok: true,
+            [tabla]:data // con los corchetes le estoy diciendo que tabla es el nombre de la colección. Sería algo dinamico
+
+        });
+    })
+
+
+
+
+
+})
 
 
 function buscarHospitales(busqueda,regex) {
