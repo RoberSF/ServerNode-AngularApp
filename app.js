@@ -30,9 +30,13 @@ mongoose.connection.openUri('mongodb://localhost:27017/hospitaldb', (error, resp
 
 var appRoutes = require('./routes/app'); // el path dónde están las rutas
 
-var usuarioRoutes = require('./routes/usuario')
+var usuarioRoutes = require('./routes/usuario');
 
-var usuarioLogin = require('./routes/login')
+var usuarioLogin = require('./routes/login');
+
+var hospitalRoutes =  require('./routes/hospital');
+
+var medicoRoutes = require('./routes/medico')
 
 
 
@@ -42,6 +46,8 @@ var usuarioLogin = require('./routes/login')
 
 
 app.use('/usuario', usuarioRoutes); // se pone arriba por que si no entrarían por el de abajo
+app.use('/hospital', hospitalRoutes); // se pone arriba por que si no entrarían por el de abajo
+app.use('/medico', medicoRoutes); // se pone arriba por que si no entrarían por el de abajo
 app.use('/login', usuarioLogin); // se pone arriba por que si no entrarían por el de abajo
 app.use('/', appRoutes); // middleware. "Cualquier match con '/' , ejecuta appRoutes"
 

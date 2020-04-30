@@ -70,7 +70,7 @@ app.post('/', middlewareAutentication.verificaToken,(request, response)=> { // m
 })
 
 // *****************************************Actualizar Datos*************************
-app.put('/:id', (request,response) => {
+app.put('/:id', middlewareAutentication.verificaToken, (request,response) => {
 
     var id = request.params.id; // para recibirlo de la URL 
     var body = request.body; 
@@ -111,7 +111,8 @@ app.put('/:id', (request,response) => {
                                             // lo guardo dentro del callback del save ya que el save, ya ocurrió.
             response.status(200).json({
                 ok: true,
-                usuario: usuarioGuardado
+                usuario: usuarioGuardado,
+                usuarioToken: request.usuario // con esto sabemos quien fue el usuario que hizo el post después de pasar por el middlware
             });
     
         });
@@ -122,7 +123,7 @@ app.put('/:id', (request,response) => {
 
 //***********************************eliminar un usuario***********************************
 
-app.delete('/:id', (req,resp) => {
+app.delete('/:id', middlewareAutentication.verificaToken, (req,resp) => {
 
     var id = req.params.id; // el id tiene que ser el mismo nombre que aparece en la url :id
 
@@ -137,7 +138,8 @@ app.delete('/:id', (req,resp) => {
 
         resp.status(201).json({
             ok: true,
-            usuario: usuarioBorrado
+            usuario: usuarioBorrado,
+            usuarioToken: request.usuario // con esto sabemos quien fue el usuario que hizo el post después de pasar por el middlware
         });
     })
 })
