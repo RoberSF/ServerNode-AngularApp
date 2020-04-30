@@ -15,7 +15,12 @@ var middlewareAutentication = require('../middlewares/autentication')
 //*******************************************Obtener usuarios********************************
  app.get('/', (request, response, next) => {
 
-        Usuario.find({}, ('nombre email img role') //el .find es por mongoo. Las caracteristicas es para que se muestre sólo eso. Yo no quiero que me enseñe su password por ejemplo
+        var since = request.query.since || 0; // lo que recibo por la url. Siguiente paso? .skip
+        since = Number(since);
+
+        Usuario.find({}, ('nombre email img role')) //el .find es por mongoo. Las caracteristicas es para que se muestre sólo eso. Yo no quiero que me enseñe su password por ejemplo
+            .skip(since) // con esto le estoy diciendo que se salte los x registros "localhost:4000/usuario?since=5"
+            .limit(5) // le estoy diciendo que me muestre sólo los 5 primeros registros. Siguiente paso? var = since
             .exec(
             
             (error,usuarios) => { 
@@ -27,13 +32,19 @@ var middlewareAutentication = require('../middlewares/autentication')
                     errors: error
                 });
             }
-            response.status(200).json({
-                ok: true,
-                usuarios: usuarios
-            });
-    
-    
-        }) )
+
+            Usuario.count({}, (error, count) => {
+
+                response.status(200).json({
+                    ok: true,
+                    usuarios: usuarios,
+                    total: count,// numero de usuario totales
+                });
+            })
+
+
+        }) 
+
     })
 
 

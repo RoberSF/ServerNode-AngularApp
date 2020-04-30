@@ -17,7 +17,12 @@ var Hospital = require('../models/hospital');
 
 app.get('/', (request, response) => {
 
+    var since = request.query.since || 0; // lo que recibo por la url. Siguiente paso? .skip
+    since = Number(since);
+
     Hospital.find({}) //el .find es por mongoo. Las caracteristicas es para que se muestre sólo eso. Yo no quiero que me enseñe su password por ejemplo
+            .skip(since) // con esto le estoy diciendo que se salte los x registros "localhost:4000/usuario?since=5"
+            .limit(5) // le estoy diciendo que me muestre sólo los 5 primeros registros. Siguiente paso? var = since
             .populate('usuario', 'nombre email') // que table y que campos quiero de la tabla relacionada. Así cuando haga la petición get voy a saber quien la hizo
             .exec(
             
@@ -30,13 +35,19 @@ app.get('/', (request, response) => {
                     errors: error
                 });
             }
-            response.status(200).json({
-                ok: true,
-                hospitales: hospitales
-            });
-        }) 
 
+            Hospital.count({}, (error, count) => {
+
+                response.status(200).json({
+                    ok: true,
+                    hospitales: hospitales,
+                    total: count,// numero de usuario totales
+                });
+            })
+        }) 
     })
+
+
 
 
 //*****************************************************************************************************
