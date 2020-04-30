@@ -17,6 +17,8 @@ var Medico = require('../models/medico');
 
 app.get('/', (request, response) => {
     Medico.find({}) //el .find es por mongoo. Las caracteristicas es para que se muestre sólo eso. Yo no quiero que me enseñe su password por ejemplo
+            .populate('usuario', 'nombre email')
+            .populate('hospital')
             .exec(
             
             (error,medicos) => { 
