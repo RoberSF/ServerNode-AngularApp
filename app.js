@@ -40,6 +40,8 @@ var medicoRoutes = require('./routes/medico');
 
 var busquedaRoutes = require('./routes/busqueda');
 
+var uploadRoutes = require ('./routes/upload')
+
 
 
 //************************************************************Rutas*************************************************************
@@ -49,6 +51,7 @@ app.use('/usuario', usuarioRoutes); // se pone arriba por que si no entrarían p
 app.use('/hospital', hospitalRoutes); // se pone arriba por que si no entrarían por el de abajo
 app.use('/medico', medicoRoutes); // se pone arriba por que si no entrarían por el de abajo
 app.use('/busqueda', busquedaRoutes); // se pone arriba por que si no entrarían por el de abajo
+app.use('/upload', uploadRoutes); // se pone arriba por que si no entrarían por el de abajo
 app.use('/login', usuarioLogin); // se pone arriba por que si no entrarían por el de abajo
 app.use('/', appRoutes); // middleware. "Cualquier match con '/' , ejecuta appRoutes"
 
