@@ -67,32 +67,112 @@ app.put('/:tipo/:id', (request, response, next) => { // el tipo y el id son para
 
     var path = (`./uploads/${tipo}/${newNameFile}`); // los parentesis son obligatorios
 
-   
 
-
-    archivo.mv(path, error => {
-
-        if ( error) {
-        return response.status(500).json({ 
-            ok: false,
-            mensaje: 'Error al mover archivo'
-        })
-    }
-
-
-    subirPorTipo(tipo, id, newNameFile, response);
-
-    });
+    existeUsuario();
+    existeMedicos ();
+    existeHospital();
 
 
 });
 
+
+function existeUsuario() {
+    if ( tipo === 'usuarios') {
+
+        Usuario.findById(id, (error, usuario) => {
+
+            // si no existe usuario salte fuera
+            if ( !usuario ) {
+                return response.status(500).json({ 
+                    ok: false,
+                    mensaje: 'No existe ese usuario',
+                });
+            }
+
+            archivo.mv(path, error => {
+
+                if ( error) {
+                return response.status(500).json({ 
+                    ok: false,
+                    mensaje: 'Error al mover archivo'
+                })
+            }
+        
+            subirPorTipo(tipo, id, newNameFile, response);
+        
+        
+            });
+        });
+    }
+}
+
+function existeMedicos () {
+    if ( tipo === 'medicos') {
+
+        Medico.findById(id, (error, medico) => {
+
+            // si no existe usuario salte fuera
+            if ( !medico ) {
+                return response.status(500).json({ 
+                    ok: false,
+                    mensaje: 'No existe ese medico',
+                });
+            }
+
+            archivo.mv(path, error => {
+
+                if ( error) {
+                return response.status(500).json({ 
+                    ok: false,
+                    mensaje: 'Error al mover archivo'
+                })
+            }
+        
+            subirPorTipo(tipo, id, newNameFile, response);
+        
+        
+            });
+        });
+    }
+}
+
+
+function existeHospital() {
+    if ( tipo === 'hospitales') {
+
+        Hospital.findById(id, (error, hospital) => {
+
+            // si no existe usuario salte fuera
+            if ( !hospital ) {
+                return response.status(500).json({ 
+                    ok: false,
+                    mensaje: 'No existe ese hospital',
+                });
+            }
+
+            archivo.mv(path, error => {
+
+                if ( error) {
+                return response.status(500).json({ 
+                    ok: false,
+                    mensaje: 'Error al mover archivo'
+                })
+            }
+        
+            subirPorTipo(tipo, id, newNameFile, response);
+        
+        
+            });
+        });
+    }
+}
 
 function subirPorTipo(tipo, id, newNameFile, response) {
 
     if ( tipo === 'usuarios') {
 
         Usuario.findById(id, (error, usuario) => {
+
 
             var pathViejo = './uploads/usuarios/'+ usuario.img;
 
@@ -143,6 +223,7 @@ function subirPorTipo(tipo, id, newNameFile, response) {
     if ( tipo === 'hospitales') {
         Hospital.findById(id, (error, hospital) => {
 
+
             var pathViejo = './uploads/hospitales/'+ hospital.img;
 
             // si existe img, elimina la imagen
@@ -156,6 +237,7 @@ function subirPorTipo(tipo, id, newNameFile, response) {
                 return response.status(200).json({ 
                     ok: true,
                     mensaje: 'Usuario actualizado correctamente',
+                    pathViejo:pathViejo,
                     hospitalActualizado: hospitalActualizado
                 });
             })
@@ -164,5 +246,4 @@ function subirPorTipo(tipo, id, newNameFile, response) {
     }
 
 }
-
 module.exports = app; // exporto las rutas hacia afuera. Tendría que importarlo donde lo uso
