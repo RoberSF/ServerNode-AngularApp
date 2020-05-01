@@ -118,7 +118,7 @@ app.put('/:id', middlewareAutentication.verificaToken, (request,response) => {
                 });
             }
 
-            usuarioGuardado.password = ':)' // no es que elimine la contraseña, si no, que es como una especie de exclusión para que no se muestre
+        usuarioGuardado.password = ':)' // no es que elimine la contraseña, si no, que es como una especie de exclusión para que no se muestre
                                             // lo guardo dentro del callback del save ya que el save, ya ocurrió.
             response.status(200).json({
                 ok: true,

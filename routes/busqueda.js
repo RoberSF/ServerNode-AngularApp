@@ -87,6 +87,12 @@ app.get('/coleccion/:tabla/:busqueda', (request, response) => {
 })
 
 
+
+//***************************************************************************************************** */
+//                                      Promesas
+//******************************************************************************************************** */
+
+
 function buscarHospitales(busqueda,regex) {
     
     return new Promise( (resolve, reject) => {
