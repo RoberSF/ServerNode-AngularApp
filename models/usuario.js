@@ -18,7 +18,11 @@ var usuarioSchema = new Schema({
     password:{type: String, required: [true, 'El password es necesario']}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
     img:{type: String, requiered:false}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
     role:{type: String, requiered:true,default:'USER_ROLE', enum: rolesValidos}, // para decirle el tipo de dato que es y que es requerido=obligatorio, el mensaje es opcional
-});                                                                              // enum lo que hace es permitirme solo los valores que le digo arriba
+                                                                                // enum lo que hace es permitirme solo los valores que le digo arriba
+    google: {type: Boolean, default:false}                                    
+
+});                                                                              
+
 
 usuarioSchema.plugin(uniqueValidator, {message: '{PATH} debe ser único'});
 

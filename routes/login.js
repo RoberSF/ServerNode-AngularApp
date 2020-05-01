@@ -1,121 +1,180 @@
-// Requires (Importación de librerías para que funcione algo)
+// Tuve que hacer npm uninstall google-auth-library --save  y después npm install google-auth-library@0.12.0 --save
+// me decía  GoogleAuth is not a constructor
+
+
 var express = require('express');
+var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+
+var SEED = require('../config/config').SEED;
+
 var app = express();
-var bcrypt = require('bcryptjs'); // Librería para encriptar la contraseña
-var Usuario = require('../models/usuario'); // me permite usar todo lo que hay en usuarios.js
-var jwt = require('jsonwebtoken') // librería para crear el token 
-var SEED = require('../config/config').SEED; // es una constante por eso la tengo en un archivo aparte
+var Usuario = require('../models/usuario');
 
 
-//Google
-var CLIENT_ID = require('../config/config').CLIENT_ID; // es una constante por eso la tengo en un archivo aparte
-var GOOGLE_SECRET = require('../config/config').GOOGLE_SECRET; // es una constante por eso la tengo en un archivo aparte
-const {OAuth2Client} = require('google-auth-library');
-const client = new OAuth2Client(CLIENT_ID);
+var GoogleAuth = require('google-auth-library');
+var auth = new GoogleAuth;
+
+const GOOGLE_CLIENT_ID = require('../config/config').GOOGLE_CLIENT_ID;
+const GOOGLE_SECRET = require('../config/config').GOOGLE_SECRET;
+
+// ==========================================
+//  Autenticación De Google
+// ==========================================
+app.post('/google', (req, res) => {
+
+    var token = req.body.token || 'XXX';
 
 
-//***********************************************************************************************************
-//                                      Autenticacio Google */
-//********************************************************************************************************** */
-async function verify(token) {
-    const ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+    var client = new auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_SECRET, '');
+
+    client.verifyIdToken(
+        token,
+        GOOGLE_CLIENT_ID,
         // Or, if multiple clients access the backend:
-        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
-    });
+        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3],
+        function(e, login) {
 
-    const payload = ticket.getPayload(); // aquí vamos a tener la info del usuario
-    // const userid = payload['sub'];
-    // If request specified a G Suite domain:
-    //const domain = payload['hd'];
-
-    return {
-        nombre: payload.name,
-        email: payload.email,
-        img: payload.picture,
-        google: true,
-
-    }
-  }
+            if (e) {
+                return res.status(400).json({
+                    ok: true,
+                    mensaje: 'Token no válido',
+                    errors: e
+                });
+            }
 
 
-  app.post('/google', (req, res,next) =>{
-    var token = req.body.token;
-    const oAuth2Client = new OAuth2Client(
-       CLIENT_ID,
-       GOOGLE_SECRET
-     );
-     const tiket = oAuth2Client.verifyIdToken({
-       idToken: token
-       //audience: GOOGLE_CLIENT_ID
-     });
-     tiket.then(data =>{
-       res.status(200).json({
-         ok: true,
-         tiket: data.payload
-       })
-     }).catch(err => {
+            var payload = login.getPayload();
+            // var userid = payload['sub'];
+            // If request specified a G Suite domain:
+            //var domain = payload['hd'];
+
+            Usuario.findOne({ email: payload.email }, (err, usuario) => {
+
+                if (err) {
+                    return res.status(500).json({
+                        ok: true,
+                        mensaje: 'Error al buscar usuario - login',
+                        errors: err
+                    });
+                }
+
+                if (usuario) {
+
+                    if (usuario.google === false) {
+                        return res.status(400).json({
+                            ok: true,
+                            mensaje: 'Debe de usar su autenticación normal'
+                        });
+                    } else {
+
+                        usuario.password = ':)';
+
+                        var token = jwt.sign({ usuario: usuario }, SEED, { expiresIn: 14400 }); // 4 horas
+
+                        res.status(200).json({
+                            ok: true,
+                            usuario: usuario,
+                            token: token,
+                            id: usuario._id
+                        });
+
+                    }
+
+                    // Si el usuario no existe por correo
+                } else {
+
+                    var usuario = new Usuario();
+
+
+                    usuario.nombre = payload.name;
+                    usuario.email = payload.email;
+                    usuario.password = ':)';
+                    usuario.img = payload.picture;
+                    usuario.google = true;
+
+                    usuario.save((err, usuarioDB) => {
+
+                        if (err) {
+                            return res.status(500).json({
+                                ok: true,
+                                mensaje: 'Error al crear usuario - google',
+                                errors: err
+                            });
+                        }
+
+
+                        var token = jwt.sign({ usuario: usuarioDB }, SEED, { expiresIn: 14400 }); // 4 horas
+
+                        res.status(200).json({
+                            ok: true,
+                            usuario: usuarioDB,
+                            token: token,
+                            id: usuarioDB._id
+                        });
+
+                    });
+
+                }
+
+
+            });
+
+
+        });
+
+
+
+
+});
+
+// ==========================================
+//  Autenticación normal
+// ==========================================
+app.post('/', (req, res) => {
+
+    var body = req.body;
+
+    Usuario.findOne({ email: body.email }, (err, usuarioDB) => {
+
         if (err) {
-            return res.status(400).json({
+            return res.status(500).json({
                 ok: false,
-                mensaje: 'Token no válido',
+                mensaje: 'Error al buscar usuario',
                 errors: err
             });
         }
-    });
-  });
 
-
-
-//***********************************************************************************************************
-//                                      Autenticacio Normal */
-//********************************************************************************************************** */
-app.post('/',(request,response) => {
-
-    var body = request.body; // esto sólo va a funcionar si tengo el body-parser
-
-    Usuario.findOne({email: body.email}, (error, usuarioDB) => {
-
-        if ( error ) {
-            return response.status(400).json({
+        if (!usuarioDB) {
+            return res.status(400).json({
                 ok: false,
-                mensaje: 'Error al buscar usuario',
-                errors: error
+                mensaje: 'Credenciales incorrectas - email',
+                errors: err
             });
         }
 
-        if ( !usuarioDB ) {
-            return response.status(400).json({
+        if (!bcrypt.compareSync(body.password, usuarioDB.password)) {
+            return res.status(400).json({
                 ok: false,
-                mensaje: 'email incorrecto',
-                errors: error
+                mensaje: 'Credenciales incorrectas - password',
+                errors: err
             });
         }
 
-        if ( !bcrypt.compareSync(body.password, usuarioDB.password)) { // compara el string que le estamos mandando con el string que hemos encriptado 
-            return response.status(400).json({
-                ok: false,
-                mensaje: 'password incorrecto',
-                errors: error
-            });
-        }
+        // Crear un token!!!
+        usuarioDB.password = ':)';
 
+        var token = jwt.sign({ usuario: usuarioDB }, SEED, { expiresIn: 14400 }); // 4 horas
 
-        // Crear token
-        usuarioDB.password = ':)'
-        var token = jwt.sign({usuario: usuarioDB}, SEED, {expiresIn: 14400})
-                            // le mando una data // la semilla de mi back,lo que yo quiera // el tiempo de validez 14400=4h
-
-        response.status(200).json({
+        res.status(200).json({
             ok: true,
-            menssage: 'Login Correcto',
             usuario: usuarioDB,
-            id: usuarioDB._id,
             token: token,
-            body:body
+            id: usuarioDB._id
         });
+
     })
+
 
 });
 
@@ -123,13 +182,4 @@ app.post('/',(request,response) => {
 
 
 
-
-
-
-
-
-
-
-
-
-module.exports = app; // exporto las rutas hacia afuera. Tendría que importarlo donde lo uso
+module.exports = app;
