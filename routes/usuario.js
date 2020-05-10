@@ -49,7 +49,7 @@ var middlewareAutentication = require('../middlewares/autentication')
 
 
 //***************************************** Crear usuarios******************************************************
-app.post('/', middlewareAutentication.verificaToken,(request, response)=> { // mando el middleware como parámetro
+app.post('/',(request, response)=> { // mando el middleware como parámetro
 
     var body = request.body; // esto sólo va a funcionar si tengo el body-parser
 

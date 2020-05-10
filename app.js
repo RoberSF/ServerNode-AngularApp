@@ -9,6 +9,20 @@ var bodyParser = require('body-parser'); // librería para pasar la data del pos
 // *******************************Inicializar variables(aquí es donde se usan las librerías)************************************
 var app = express();
 
+// *****************************************************************************************************************
+//                                       Middleware           CORS
+//*****************************************************************************************************************/
+
+// Ojo con el headers que tengo que mandarle el token
+
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method')
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+  })
+
 // **********************************Body Parser Librería*****************************************************(middleware)
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
