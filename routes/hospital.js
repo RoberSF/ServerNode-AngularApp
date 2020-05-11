@@ -48,6 +48,36 @@ app.get('/', (request, response) => {
     })
 
 
+//*****************************************************************************************************
+//                                          Get Hospital
+//*****************************************************************************************************
+
+app.get('/:id', (req, resp) => {
+    var id = req.params.id;
+    Hospital.findById(id)
+        .populate('usuario', 'nombre img email')
+        .exec( (error, hospital) => {
+            if (error) {
+                return resp.status(500).json({
+                    ok:false,
+                    menssage: 'Error al buscar Hospital',
+                    errors: error
+                });
+            }
+
+            if ( !hospital ) {
+                return resp.status(400).json({
+                    ok: false,
+                    menssage: 'El hospital con id' + id + 'no existe'
+                });
+            }
+
+            resp.status(200).json({
+                ok:true,
+                hospital: hospital
+            });
+        })
+})
 
 
 //*****************************************************************************************************
