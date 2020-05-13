@@ -18,8 +18,11 @@ app.use(fileUpload());
 // ********************RUTAS*******************************
 app.put('/:tipo/:id', (request, response, next) => { // el tipo y el id son para asignarles el nombre al archivo. 
 
+    
     var tipo = request.params.tipo;
     var id = request.params.id;
+
+    console.log(tipo);
 
     // tipos de coleccion
 
@@ -28,7 +31,8 @@ app.put('/:tipo/:id', (request, response, next) => { // el tipo y el id son para
     if (tiposValidos.indexOf(tipo) < 0 ) {
         return response.status(400).json({ 
             ok: false,
-            mensaje: 'tipos de colección no válidos'
+            mensaje: 'tipos de colección no válidos',
+            errors: { message: 'Tipo de colección no es válida' }
         });
     }
 
@@ -67,16 +71,31 @@ app.put('/:tipo/:id', (request, response, next) => { // el tipo y el id son para
 
     var path = (`./uploads/${tipo}/${newNameFile}`); // los parentesis son obligatorios
 
+    archivo.mv(path, err => {
 
-    existeUsuario();
-    existeMedicos ();
-    existeHospital();
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error al mover archivo',
+                errors: err
+            });
+        }
+
+        console.log(tipo,id,newNameFile, response);
+        subirPorTipo(tipo, id, newNameFile, response);
+
+
+
+
+    })
+
+
 
 
 });
 
 
-function existeUsuario() {
+function existeUsuario(tipo, id, archivo, path) {
     if ( tipo === 'usuarios') {
 
         Usuario.findById(id, (error, usuario) => {
@@ -169,10 +188,19 @@ function existeHospital() {
 
 function subirPorTipo(tipo, id, newNameFile, response) {
 
+
+
     if ( tipo === 'usuarios') {
 
         Usuario.findById(id, (error, usuario) => {
 
+            if (!usuario) {
+                return res.status(400).json({
+                    ok: true,
+                    mensaje: 'Usuario no existe',
+                    errors: { message: 'Usuario no existe' }
+                });
+            }
 
             var pathViejo = './uploads/usuarios/'+ usuario.img;
 
@@ -186,6 +214,7 @@ function subirPorTipo(tipo, id, newNameFile, response) {
             usuario.save( (error, usuarioActualizado) => {
 
                 usuarioActualizado.password = ':)';
+
                 return response.status(200).json({ 
                     ok: true,
                     mensaje: 'Usuario actualizado correctamente',
@@ -198,6 +227,14 @@ function subirPorTipo(tipo, id, newNameFile, response) {
     if ( tipo === 'medicos') {
 
         Medico.findById(id, (error, medico) => {
+
+            if (!medico) {
+                return res.status(400).json({
+                    ok: true,
+                    mensaje: 'Médico no existe',
+                    errors: { message: 'Médico no existe' }
+                });
+            }
 
             var pathViejo = './uploads/medicos/'+ medico.img;
 
@@ -213,8 +250,8 @@ function subirPorTipo(tipo, id, newNameFile, response) {
                
                 return response.status(200).json({ 
                     ok: true,
-                    mensaje: 'Usuario actualizado correctamente',
-                    medicoActualizado: medicoActualizado
+                    mensaje: 'Medico actualizado correctamente',
+                    medico: medicoActualizado
                 });
             })
 
@@ -222,6 +259,14 @@ function subirPorTipo(tipo, id, newNameFile, response) {
     }
     if ( tipo === 'hospitales') {
         Hospital.findById(id, (error, hospital) => {
+
+            if (!hospital) {
+                return res.status(400).json({
+                    ok: true,
+                    mensaje: 'Hospital no existe',
+                    errors: { message: 'Hospital no existe' }
+                });
+            }
 
 
             var pathViejo = './uploads/hospitales/'+ hospital.img;
@@ -236,9 +281,9 @@ function subirPorTipo(tipo, id, newNameFile, response) {
             hospital.save( (error, hospitalActualizado) => {
                 return response.status(200).json({ 
                     ok: true,
-                    mensaje: 'Usuario actualizado correctamente',
+                    mensaje: 'Imagen de hospital actualizada',
                     pathViejo:pathViejo,
-                    hospitalActualizado: hospitalActualizado
+                    hospital: hospitalActualizado
                 });
             })
 

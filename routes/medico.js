@@ -152,7 +152,7 @@ app.delete('/:id', middlewareAutentication.verificaToken, (request,response) => 
             });
         } 
 
-        resp.status(201).json({
+        response.status(201).json({
             ok: true,
             medico: medicoBorrado,
         });
