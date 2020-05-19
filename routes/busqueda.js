@@ -75,7 +75,7 @@ app.get('/coleccion/:tabla/:busqueda', (request, response) => {
     promesa.then(data => {
         response.status(200).json({ 
             ok: true,
-            [tabla]:data // con los corchetes le estoy diciendo que tabla es el nombre de la colección. Sería algo dinamico
+            tabla:data // con los corchetes le estoy diciendo que tabla es el nombre de la colección. Sería algo dinamico
 
         });
     })
@@ -98,7 +98,7 @@ function buscarHospitales(busqueda,regex) {
     return new Promise( (resolve, reject) => {
 
         Hospital.find({nombre: regex})
-            .populate('usuario', 'nombre email')
+            .populate('usuario', 'nombre email img')
             .exec((error, hospitales) => {
 
             if(error) {
@@ -118,7 +118,7 @@ function buscarMedicos(busqueda,regex) {
     return new Promise( (resolve, reject) => {
 
         Medico.find({nombre: regex})
-            .populate('usuario', 'nombre email')
+            .populate('usuario', 'nombre email img')
             .populate('hospital')
             .exec((error, medicos) => {
 
@@ -138,7 +138,7 @@ function buscarUsuario(busqueda,regex) {
     
     return new Promise( (resolve, reject) => {
 
-        Usuario.find({}, 'nombre email role') // así no me sale el password
+        Usuario.find({}, 'nombre email role img') // así no me sale el password
         .or([ { 'nombre':regex} , { 'email': regex}]) // es una expresion del mongoose. Es un array de condiciones
         .exec( (error, usuarios) => {
             if(error) {
