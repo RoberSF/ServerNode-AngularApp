@@ -49,3 +49,29 @@ exports.verificaToken = function(req, res, next) {
     next();
     });
    }
+
+
+ // ==========================================
+// Enviar token por headers
+// Es otro middelware para verificar que cumple una condicion y dejar pasar al resto del código
+// ==========================================
+
+
+exports.verificaADMIN_ROLE = function(req, res, next) {
+
+
+    var usuario = req.usuario;
+
+    if ( usuario.role === 'ADMIN_ROLE') {
+        next();
+        return;
+    } else {
+        return res.status(401).json({
+            ok: false,
+            mensaje: 'User con permisos insuficientes',
+            
+    });
+
+   }
+
+}

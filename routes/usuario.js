@@ -49,7 +49,7 @@ var middlewareAutentication = require('../middlewares/autentication')
 
 
 //***************************************** Crear usuarios******************************************************
-app.post('/',(request, response)=> { // mando el middleware como parámetro
+app.post('/', [ middlewareAutentication.verificaToken, middlewareAutentication.verificaADMIN_ROLE],(request, response)=> { // mando el middleware como parámetro
 
     var body = request.body; // esto sólo va a funcionar si tengo el body-parser
 
@@ -81,7 +81,7 @@ app.post('/',(request, response)=> { // mando el middleware como parámetro
 })
 
 // *****************************************Actualizar Datos*************************
-app.put('/:id', middlewareAutentication.verificaToken, (request,response) => {
+app.put('/:id',[ middlewareAutentication.verificaToken, middlewareAutentication.verificaADMIN_ROLE], (request,response) => {
 
     var id = request.params.id; // para recibirlo de la URL 
     var body = request.body; 
@@ -134,7 +134,7 @@ app.put('/:id', middlewareAutentication.verificaToken, (request,response) => {
 
 //***********************************eliminar un usuario***********************************
 
-app.delete('/:id', middlewareAutentication.verificaToken, (req,resp) => {
+app.delete('/:id', [ middlewareAutentication.verificaToken, middlewareAutentication.verificaADMIN_ROLE], (req,resp) => {
 
     var id = req.params.id; // el id tiene que ser el mismo nombre que aparece en la url :id
 
