@@ -52,6 +52,7 @@ exports.verificaToken = function(req, res, next) {
 
 
  // ==========================================
+ // VERIFICA ADMIN_ROLE
 // Enviar token por headers
 // Es otro middelware para verificar que cumple una condicion y dejar pasar al resto del código
 // ==========================================
@@ -63,6 +64,35 @@ exports.verificaADMIN_ROLE = function(req, res, next) {
     var usuario = req.usuario;
 
     if ( usuario.role === 'ADMIN_ROLE') {
+        next();
+        return;
+    } else {
+        return res.status(401).json({
+            ok: false,
+            mensaje: 'User con permisos insuficientes',
+            
+    });
+
+   }
+
+}
+
+
+ // ==========================================
+// VERIFICA ADMIN_ROLE o mismo usuario
+// Enviar token por headers
+// Es otro middelware para verificar que cumple una condicion y dejar pasar al resto del código
+// ==========================================
+
+
+exports.verificaADMIN_ROLE_o_MISMOuSUARIO = function(req, res, next) {
+
+
+    var usuario = req.usuario;
+
+    var id = req.params.id
+
+    if ( usuario.role === 'ADMIN_ROLE' || usuario._id === id) {
         next();
         return;
     } else {

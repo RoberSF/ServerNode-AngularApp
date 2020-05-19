@@ -81,7 +81,7 @@ app.post('/', [ middlewareAutentication.verificaToken, middlewareAutentication.v
 })
 
 // *****************************************Actualizar Datos*************************
-app.put('/:id',[ middlewareAutentication.verificaToken, middlewareAutentication.verificaADMIN_ROLE], (request,response) => {
+app.put('/:id',[ middlewareAutentication.verificaToken, middlewareAutentication.verificaADMIN_ROLE_o_MISMOuSUARIO], (request,response) => {
 
     var id = request.params.id; // para recibirlo de la URL 
     var body = request.body; 
