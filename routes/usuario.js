@@ -28,7 +28,7 @@ var middlewareAutentication = require('../middlewares/autentication')
             if ( error ) {
                 return response.status(500).json({
                     ok: false,
-                    mensaje: 'Error cargando usarios',
+                    mensaje: 'Error cargando usuarios',
                     errors: error
                 });
             }
