@@ -199,32 +199,31 @@ app.post('/', (req, res) => {
 
 function obtenerMenu(ROLE) {
 
-    var menu = [
-        {
-          title: 'Main Menu',
-          icon: 'mdi mdi-gauge',
-          submenu: [
-            {title: 'Dashboard',url: '/dashboard'},
-            {title: 'ProgressBar',url: '/progress'},
-            {title: 'Charts',url: '/chart1'},
-            {title: 'Promesas',url: '/promesas'},
-            {title: 'rxjs' ,url: '/rxjs'}
-          ]
+    var menu = [{
+            title: 'Main Menu',
+            icon: 'mdi mdi-gauge',
+            submenu: [
+                { title: 'Dashboard', url: '/dashboard' },
+                { title: 'ProgressBar', url: '/progress' },
+                { title: 'Charts', url: '/chart1' },
+                { title: 'Promesas', url: '/promesas' },
+                { title: 'Rxjs', url: '/rxjs' }
+            ]
         },
         {
-          title: 'Mantenimientos',
-          icon: 'mdi mdi-folder-lock-open',
-          submenu: [
-            // {title: 'Usuarios',url: '/usuarios'},
-            {title: 'Hospitales',url: '/hospitales'},
-            {title: 'Medicos',url: '/medicos'},
-          ]
+            title: 'Mantenimientos',
+            icon: 'mdi mdi-folder-lock-open',
+            submenu: [
+                // {title: 'Usuarios',url: '/usuarios'},
+                { title: 'Hospitales', url: '/hospitales' },
+                { title: 'Medicos', url: '/medicos' },
+            ]
         }
-      ]
+    ]
 
-      if ( ROLE === 'ADMIN_ROLE') {
-          menu[1].submenu.unshift( {title: 'Usuarios',url: '/usuarios'} )
-      }
+    if (ROLE === 'ADMIN_ROLE') {
+        menu[1].submenu.unshift({ title: 'Usuarios', url: '/usuarios' })
+    }
 
 
     return menu;
