@@ -206,8 +206,11 @@ function obtenerMenu(ROLE) {
                 { title: 'Dashboard', url: '/dashboard' },
                 { title: 'ProgressBar', url: '/progress' },
                 { title: 'Charts', url: '/chart1' },
-                { title: 'Promesas', url: '/promesas' },
-                { title: 'Rxjs', url: '/rxjs' }
+                { title: 'Drag&Drop', url: '/dragDrop' },
+                { title: 'Search Inside', url: '/buscar/:' },
+                { title: 'Photo', url: '/PhotoClick' }
+                // { title: 'Promesas', url: '/promesas' },
+                // { title: 'Rxjs', url: '/rxjs' },
             ]
         },
         {

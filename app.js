@@ -6,6 +6,9 @@ var bodyParser = require('body-parser'); // librería para pasar la data del pos
 
 
 
+
+
+
 // *******************************Inicializar variables(aquí es donde se usan las librerías)************************************
 var app = express();
 
@@ -54,9 +57,15 @@ var medicoRoutes = require('./routes/medico');
 
 var busquedaRoutes = require('./routes/busqueda');
 
-var uploadRoutes = require('./routes/upload')
+var uploadRoutes = require('./routes/upload');
 
-var imagenesRoutes = require('./routes/imagenes')
+var imagenesRoutes = require('./routes/imagenes');
+
+var chatRoutes = require('./routes/chat');
+
+var dateRoutes = require('./routes/date');
+
+
 
 
 
@@ -70,6 +79,8 @@ app.use('/busqueda', busquedaRoutes); // se pone arriba por que si no entrarían
 app.use('/upload', uploadRoutes); // se pone arriba por que si no entrarían por el de abajo
 app.use('/img', imagenesRoutes);
 app.use('/login', usuarioLogin); // se pone arriba por que si no entrarían por el de abajo
+app.use('/chat', chatRoutes);
+app.use('/date', dateRoutes);
 app.use('/', appRoutes); // middleware. "Cualquier match con '/' , ejecuta appRoutes"
 
 
