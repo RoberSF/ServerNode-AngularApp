@@ -1,7 +1,7 @@
 //***************************** */ Requires (Importación de librerías para que funcione algo)*********************************
-var express = require('express');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser'); // librería para pasar la data del post en un objeto javascript
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser'); // librería para pasar la data del post en un objeto javascript
 
 
 
@@ -10,7 +10,11 @@ var bodyParser = require('body-parser'); // librería para pasar la data del pos
 
 
 // *******************************Inicializar variables(aquí es donde se usan las librerías)************************************
-var app = express();
+const app = express();
+
+// *******************************PAra saber cual es el puerto que usa HEROKU************************************
+const port = process.env.PORT || 4000;
+
 
 // *****************************************************************************************************************
 //                                       Middleware           CORS
@@ -83,7 +87,7 @@ app.use('/img', imagenesRoutes);
 app.use('/login', usuarioLogin); // se pone arriba por que si no entrarían por el de abajo
 app.use('/chat', chatRoutes);
 app.use('/date', dateRoutes);
-app.use('/post', blogRoutes );
+app.use('/post', blogRoutes);
 app.use('/', appRoutes); // middleware. "Cualquier match con '/' , ejecuta appRoutes"
 
 
@@ -91,4 +95,4 @@ app.use('/', appRoutes); // middleware. "Cualquier match con '/' , ejecuta appRo
 
 
 //****************************************************Escuchar peticiones ******************************************************
-app.listen(4000, () => { console.log('Express Server corriendo en el puerto 4000:\x1b[32m%s\x1b[0m', 'running') });
+app.listen(port, () => { console.log('Express Server corriendo en el puerto 4000:\x1b[32m%s\x1b[0m', 'running') });
