@@ -208,7 +208,10 @@ function obtenerMenu(ROLE) {
                 { title: 'Charts', url: '/chart1' },
                 { title: 'Drag&Drop', url: '/dragDrop' },
                 { title: 'Search Inside', url: '/buscar/:' },
-                { title: 'Photo', url: '/PhotoClick' }
+                { title: 'Photo', url: '/PhotoClick' },
+                { title: 'Blog', url:'/blog'},
+                // { title: 'Blog-post', url:'/blog-post'},
+
                 // { title: 'Promesas', url: '/promesas' },
                 // { title: 'Rxjs', url: '/rxjs' },
             ]
@@ -225,7 +228,7 @@ function obtenerMenu(ROLE) {
     ]
 
     if (ROLE === 'ADMIN_ROLE') {
-        menu[1].submenu.unshift({ title: 'Usuarios', url: '/usuarios' })
+        menu[1].submenu.unshift({ title: 'Usuarios', url: '/usuarios' },{ title: 'Blog-edit', url:'/blog-edit'})
     }
 
 

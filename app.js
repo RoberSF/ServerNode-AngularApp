@@ -65,6 +65,8 @@ var chatRoutes = require('./routes/chat');
 
 var dateRoutes = require('./routes/date');
 
+var blogRoutes = require('./routes/blog');
+
 
 
 
@@ -81,6 +83,7 @@ app.use('/img', imagenesRoutes);
 app.use('/login', usuarioLogin); // se pone arriba por que si no entrarían por el de abajo
 app.use('/chat', chatRoutes);
 app.use('/date', dateRoutes);
+app.use('/post', blogRoutes );
 app.use('/', appRoutes); // middleware. "Cualquier match con '/' , ejecuta appRoutes"
 
 
