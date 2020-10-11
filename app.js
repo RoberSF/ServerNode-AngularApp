@@ -43,6 +43,11 @@ app.use(bodyParser.json())
 // *******************************************Conexión a la base de datos*******************************************************
 //                                              Local vs Atlas
 //*****************************************************************************************************************************
+// *podría ponerlo en config.js e importarlo
+
+// ============================
+//  Variables de entorno
+// ============================
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 
@@ -52,15 +57,16 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 let urlDB;
 
 if (process.env.NODE_ENV === 'dev') {
-    urlDB = 'mongodb://localhost:27017/cafe';
+    urlDB = 'mongodb://localhost:27017/hospitaldb';
 } else {
-    urlDB = 'mongodb+srv://admin:<fPOBVD9f2d1iiPuc>@cluster0.v9ttl.mongodb.net/test';
+    urlDB = 'mongodb+srv://admin:<fPOBVD9f2d1iiPuc>@cluster0.v9ttl.mongodb.net/hospitaldb'; //url que saco de mogoatlas=>connect => using mongo compass
 }
 process.env.URLDB = urlDB;
 
 
-// mongoose.connection.openUri('mongodb://localhost:27017/hospitaldb', {
+// mongoose.connection.openUri('mongodb://localhost:27017/hospitaldb', { // cuando trabajo en localhost antes de configurar mongo atlas
 mongoose.connection.openUri(process.env.URLDB, {
+        // lo de abajo son variables que me pide mongo al arrancar el server
         useNewUrlParser: true,
         useCreateIndex: true,
         useUnifiedTopology: true
