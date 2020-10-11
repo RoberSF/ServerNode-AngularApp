@@ -12,7 +12,7 @@ const bodyParser = require('body-parser'); // librería para pasar la data del p
 // *******************************Inicializar variables(aquí es donde se usan las librerías)************************************
 const app = express();
 
-// *******************************PAra saber cual es el puerto que usa HEROKU************************************
+// *******************************Para saber cual es el puerto que usa HEROKU************************************
 const port = process.env.PORT || 4000;
 
 
@@ -41,10 +41,34 @@ app.use(bodyParser.json())
 
 
 // *******************************************Conexión a la base de datos*******************************************************
-mongoose.connection.openUri('mongodb://localhost:27017/hospitaldb', (error, response) => {
-    if (error) throw error;
-    console.log('Base de datos:\x1b[32m%s\x1b[0m', 'running')
-})
+//                                              Local vs Atlas
+//*****************************************************************************************************************************
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
+
+// ============================
+//  Base de datos
+// ============================
+let urlDB;
+
+if (process.env.NODE_ENV === 'dev') {
+    urlDB = 'mongodb://localhost:27017/cafe';
+} else {
+    urlDB = 'mongodb+srv://admin:<fPOBVD9f2d1iiPuc>@cluster0.v9ttl.mongodb.net/test';
+}
+process.env.URLDB = urlDB;
+
+
+// mongoose.connection.openUri('mongodb://localhost:27017/hospitaldb', {
+mongoose.connection.openUri(process.env.URLDB, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useUnifiedTopology: true
+    },
+    (error, response) => {
+        if (error) throw error;
+        console.log('Base de datos:\x1b[32m%s\x1b[0m', 'running')
+    })
 
 
 //*********************************************Importar rutas que voy a usar****************************************************

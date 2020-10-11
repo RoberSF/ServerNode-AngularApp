@@ -15,13 +15,13 @@ var middlewareAutentication = require('../middlewares/autentication')
 //*******************************************Obtener usuarios********************************
 app.get('/', (request, response, next) => {
 
-    var since = request.query.since || 0; // lo que recibo por la url. Siguiente paso? .skip
-    since = Number(since); // localhost:4000/usuario?since=0,1,2...
+    let since = request.query.since || 0; // lo que recibo por la url. Siguiente paso? .skip
+    since = Number(since); // localhost:4000/usuario?since=0,1,2... Validamos que sea un número
 
     Usuario.find({}, ('nombre email img role google')) //el .find es por mongoo. Las caracteristicas es para que se muestre sólo eso. Yo no quiero que me enseñe su password por ejemplo
         .skip(since) // con esto le estoy diciendo que se salte los x registros "localhost:4000/usuario?since=5"
         .limit(5) // le estoy diciendo que me muestre sólo los 5 primeros registros. Siguiente paso? var = since
-        .exec(
+        .exec( // quiere decir "ejecuta esto"
 
             (error, usuarios) => {
 
@@ -133,6 +133,33 @@ app.put('/:id', [middlewareAutentication.verificaToken, middlewareAutentication.
     });
 
 });
+
+
+
+// app.put('/:id', function(req, res) {
+
+//     let id = req.params.id;
+//     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']); // pick nos permite una copia del objeto filtrando
+// para enseñear los valores que yo quiero. Propiedades que yo quiero que se vean en '' o en este caso que se puedan actualizar por que es put.
+
+
+//     Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuario) => {  // 
+
+//         if (err) {
+//             return res.status(400).json({
+//                 ok: false,
+//                 err
+//             });
+//         }
+
+//         res.json({
+//             ok: true,
+//             usuario: usuario
+//         });
+
+//     })
+
+// });
 
 //***********************************eliminar un usuario***********************************
 
