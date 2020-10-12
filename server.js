@@ -56,11 +56,11 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 // ============================
 let urlDB;
 
-if (process.env.NODE_ENV === 'dev') {
-    urlDB = 'mongodb://localhost:27017/hospitaldb';
-} else {
-    urlDB = 'mongodb+srv://admin:<fPOBVD9f2d1iiPuc>@cluster0.v9ttl.mongodb.net/hospitaldb'; //url que saco de mogoatlas=>connect => using mongo compass
-}
+// if (process.env.NODE_ENV === 'dev') {
+// urlDB = 'mongodb://localhost:27017/hospitaldb';
+// } else {
+urlDB = 'mongodb+srv://admin:fPOBVD9f2d1iiPuc@cluster0.v9ttl.mongodb.net/hospitaldb'; //url que saco de mogoatlas=>connect => using mongo compass
+// }
 process.env.URLDB = urlDB;
 
 

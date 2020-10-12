@@ -51,7 +51,7 @@ app.get('/', (request, response, next) => {
 //***************************************** Crear usuarios******************************************************
 // app.post('/', [ middlewareAutentication.verificaToken, middlewareAutentication.verificaADMIN_ROLE],(request, response)=> { // mando el middleware como parámetro
 
-app.post('/', (request, response) => { // mando el middleware como parámetro
+app.post('/', (request, response) => { // para evitar los middleware en desarrollo
 
     var body = request.body; // esto sólo va a funcionar si tengo el body-parser
 
