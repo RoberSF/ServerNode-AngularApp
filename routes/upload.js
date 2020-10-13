@@ -1,43 +1,45 @@
 // Requires (Importación de librerías para que funcione algo)
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 const fileUpload = require('express-fileupload'); // librería para subir archivos
-var fs = require('fs'); // para borrar archivos
-var Usuario = require('../models/usuario'); // me permite usar todo lo que hay en usuarios.js
-var Medico = require('../models/medico');
-var Hospital = require('../models/hospital');
+const fs = require('fs'); // para borrar archivos
+const path = require('path');
+const Usuario = require('../models/usuario'); // me permite usar todo lo que hay en usuarios.js
+const Medico = require('../models/medico');
+const Hospital = require('../models/hospital');
 
 
 
 // ********************************************************************************************************************
 //                                                 Middleware
 //******************************************************************************************************************* */
-app.use(fileUpload()); 
+// app.use(fileUpload()); 
+app.use(fileUpload({ useTempFiles: true })); //actualización
 
 
 // ********************RUTAS*******************************
 app.put('/:tipo/:id', (request, response, next) => { // el tipo y el id son para asignarles el nombre al archivo. 
 
-    
-    var tipo = request.params.tipo;
-    var id = request.params.id;
+
+    let tipo = request.params.tipo;
+    let id = request.params.id;
 
     console.log(tipo);
 
     // tipos de coleccion
 
-    var tiposValidos = ['hospitales', 'medicos', 'usuarios'];
+    let tiposValidos = ['hospitales', 'medicos', 'usuarios'];
 
-    if (tiposValidos.indexOf(tipo) < 0 ) {
-        return response.status(400).json({ 
+    if (tiposValidos.indexOf(tipo) < 0) {
+        return response.status(400).json({
             ok: false,
             mensaje: 'tipos de colección no válidos',
             errors: { message: 'Tipo de colección no es válida' }
         });
     }
 
-    if ( !request.files ) {
-        return response.status(400).json({ 
+    if (!request.files) {
+        return response.status(400).json({
             ok: false,
             mensaje: 'No files'
         })
@@ -48,14 +50,14 @@ app.put('/:tipo/:id', (request, response, next) => { // el tipo y el id son para
 
     var archivo = request.files.imagen;
     var nombreCortado = archivo.name.split('.') // con esto consigo la extension. Divide por cada punto que encuentre, pero sabemos que el ultimo(split) es la extension
-    var extensionArchivo = nombreCortado[nombreCortado.length-1] //cogemos la ultima palabra del array de nombreCortado
+    var extensionArchivo = nombreCortado[nombreCortado.length - 1] //cogemos la ultima palabra del array de nombreCortado
 
     // Solo aceptamos estas extensiones
 
-    var extensionesValidas = [ 'png', 'jpg', 'gif', 'jpeg'];
+    var extensionesValidas = ['png', 'jpg', 'gif', 'jpeg'];
 
-    if ( extensionesValidas.indexOf(extensionArchivo) < 0) {
-        return response.status(400).json({ 
+    if (extensionesValidas.indexOf(extensionArchivo) < 0) {
+        return response.status(400).json({
             ok: false,
             mensaje: 'Extension no valida'
         })
@@ -64,12 +66,12 @@ app.put('/:tipo/:id', (request, response, next) => { // el tipo y el id son para
     // Nombre de archivo personalizado para que no haya conflictos. Podemos hacerlo de la manera que queramos
     // el nombre será el id - un numero random.la extensión
 
-    var newNameFile = `${id}-${new Date().getMilliseconds()}.${extensionArchivo}`;
+    let newNameFile = `${id}-${new Date().getMilliseconds()}.${extensionArchivo}`;
 
 
     // Muevo el archivo del limbo temporal a un path donde yo lo quiero
 
-    var path = (`./uploads/${tipo}/${newNameFile}`); // los parentesis son obligatorios
+    let path = (`./uploads/${tipo}/${newNameFile}`); // los parentesis son obligatorios
 
     archivo.mv(path, err => {
 
@@ -81,7 +83,7 @@ app.put('/:tipo/:id', (request, response, next) => { // el tipo y el id son para
             });
         }
 
-        console.log(tipo,id,newNameFile, response);
+        console.log(tipo, id, newNameFile, response);
         subirPorTipo(tipo, id, newNameFile, response);
 
 
@@ -96,13 +98,13 @@ app.put('/:tipo/:id', (request, response, next) => { // el tipo y el id son para
 
 
 function existeUsuario(tipo, id, archivo, path) {
-    if ( tipo === 'usuarios') {
+    if (tipo === 'usuarios') {
 
         Usuario.findById(id, (error, usuario) => {
 
             // si no existe usuario salte fuera
-            if ( !usuario ) {
-                return response.status(500).json({ 
+            if (!usuario) {
+                return response.status(500).json({
                     ok: false,
                     mensaje: 'No existe ese usuario',
                 });
@@ -110,29 +112,29 @@ function existeUsuario(tipo, id, archivo, path) {
 
             archivo.mv(path, error => {
 
-                if ( error) {
-                return response.status(500).json({ 
-                    ok: false,
-                    mensaje: 'Error al mover archivo'
-                })
-            }
-        
-            subirPorTipo(tipo, id, newNameFile, response);
-        
-        
+                if (error) {
+                    return response.status(500).json({
+                        ok: false,
+                        mensaje: 'Error al mover archivo'
+                    })
+                }
+
+                subirPorTipo(tipo, id, newNameFile, response);
+
+
             });
         });
     }
 }
 
-function existeMedicos () {
-    if ( tipo === 'medicos') {
+function existeMedicos() {
+    if (tipo === 'medicos') {
 
         Medico.findById(id, (error, medico) => {
 
             // si no existe usuario salte fuera
-            if ( !medico ) {
-                return response.status(500).json({ 
+            if (!medico) {
+                return response.status(500).json({
                     ok: false,
                     mensaje: 'No existe ese medico',
                 });
@@ -140,16 +142,16 @@ function existeMedicos () {
 
             archivo.mv(path, error => {
 
-                if ( error) {
-                return response.status(500).json({ 
-                    ok: false,
-                    mensaje: 'Error al mover archivo'
-                })
-            }
-        
-            subirPorTipo(tipo, id, newNameFile, response);
-        
-        
+                if (error) {
+                    return response.status(500).json({
+                        ok: false,
+                        mensaje: 'Error al mover archivo'
+                    })
+                }
+
+                subirPorTipo(tipo, id, newNameFile, response);
+
+
             });
         });
     }
@@ -157,13 +159,13 @@ function existeMedicos () {
 
 
 function existeHospital() {
-    if ( tipo === 'hospitales') {
+    if (tipo === 'hospitales') {
 
         Hospital.findById(id, (error, hospital) => {
 
             // si no existe usuario salte fuera
-            if ( !hospital ) {
-                return response.status(500).json({ 
+            if (!hospital) {
+                return response.status(500).json({
                     ok: false,
                     mensaje: 'No existe ese hospital',
                 });
@@ -171,16 +173,16 @@ function existeHospital() {
 
             archivo.mv(path, error => {
 
-                if ( error) {
-                return response.status(500).json({ 
-                    ok: false,
-                    mensaje: 'Error al mover archivo'
-                })
-            }
-        
-            subirPorTipo(tipo, id, newNameFile, response);
-        
-        
+                if (error) {
+                    return response.status(500).json({
+                        ok: false,
+                        mensaje: 'Error al mover archivo'
+                    })
+                }
+
+                subirPorTipo(tipo, id, newNameFile, response);
+
+
             });
         });
     }
@@ -190,7 +192,7 @@ function subirPorTipo(tipo, id, newNameFile, response) {
 
 
 
-    if ( tipo === 'usuarios') {
+    if (tipo === 'usuarios') {
 
         Usuario.findById(id, (error, usuario) => {
 
@@ -202,20 +204,21 @@ function subirPorTipo(tipo, id, newNameFile, response) {
                 });
             }
 
-            var pathViejo = './uploads/usuarios/'+ usuario.img;
+            // var pathViejo = './uploads/usuarios/' + usuario.img;
+            var pathViejo = path.resolve(__dirname, `./uploads/usuarios/${usuario.img}`); //actualización
 
             // si existe img, elimina la imagen
-            if ( fs.existsSync(pathViejo)) {
+            if (fs.existsSync(pathViejo)) {
                 fs.unlink(pathViejo, () => {}); // me tirraba error si no le ponía el callback 
             }
 
             usuario.img = newNameFile;
 
-            usuario.save( (error, usuarioActualizado) => {
+            usuario.save((error, usuarioActualizado) => {
 
                 usuarioActualizado.password = ':)';
 
-                return response.status(200).json({ 
+                return response.status(200).json({
                     ok: true,
                     mensaje: 'Usuario actualizado correctamente',
                     usuarioActualizado: usuarioActualizado
@@ -224,7 +227,7 @@ function subirPorTipo(tipo, id, newNameFile, response) {
 
         });
     }
-    if ( tipo === 'medicos') {
+    if (tipo === 'medicos') {
 
         Medico.findById(id, (error, medico) => {
 
@@ -236,19 +239,20 @@ function subirPorTipo(tipo, id, newNameFile, response) {
                 });
             }
 
-            var pathViejo = './uploads/medicos/'+ medico.img;
+            // var pathViejo = './uploads/medicos/' + medico.img;
+            var pathViejo = path.resolve(__dirname, `./uploads/medicos/${medico.img}`); //actualización
 
             // si existe img, elimina la imagen
-            if ( fs.existsSync(pathViejo)) {
+            if (fs.existsSync(pathViejo)) {
                 fs.unlink(pathViejo, () => {}); // me tirraba error si no le ponía el callback 
             }
 
             medico.img = newNameFile;
 
-            medico.save( (error, medicoActualizado) => {
+            medico.save((error, medicoActualizado) => {
 
-               
-                return response.status(200).json({ 
+
+                return response.status(200).json({
                     ok: true,
                     mensaje: 'Medico actualizado correctamente',
                     medico: medicoActualizado
@@ -257,7 +261,7 @@ function subirPorTipo(tipo, id, newNameFile, response) {
 
         });
     }
-    if ( tipo === 'hospitales') {
+    if (tipo === 'hospitales') {
         Hospital.findById(id, (error, hospital) => {
 
             if (!hospital) {
@@ -269,20 +273,21 @@ function subirPorTipo(tipo, id, newNameFile, response) {
             }
 
 
-            var pathViejo = './uploads/hospitales/'+ hospital.img;
+            // var pathViejo = './uploads/hospitales/' + hospital.img;
+            var pathViejo = path.resolve(__dirname, `./uploads/hospitales/${hospital.img}`); //actualización
 
             // si existe img, elimina la imagen
-            if ( fs.existsSync(pathViejo)) {
+            if (fs.existsSync(pathViejo)) {
                 fs.unlink(pathViejo, () => {}); // me tirraba error si no le ponía el callback 
             }
 
             hospital.img = newNameFile;
 
-            hospital.save( (error, hospitalActualizado) => {
-                return response.status(200).json({ 
+            hospital.save((error, hospitalActualizado) => {
+                return response.status(200).json({
                     ok: true,
                     mensaje: 'Imagen de hospital actualizada',
-                    pathViejo:pathViejo,
+                    pathViejo: pathViejo,
                     hospital: hospitalActualizado
                 });
             })
