@@ -19,6 +19,7 @@ app.get('/', (request, response, next) => {
     since = Number(since); // localhost:4000/usuario?since=0,1,2...
 
     Post.find({}, ('title intro contenido categoria date comentarios img')) //el .find es por mongoo. Las caracteristicas es para que se muestre sólo eso. Yo no quiero que me enseñe su password por ejemplo
+        .populate('categoria', 'nombre descripcion')
         .skip(since) // con esto le estoy diciendo que se salte los x registros "localhost:4000/usuario?since=5"
         .limit(5) // le estoy diciendo que me muestre sólo los 5 primeros registros. Siguiente paso? var = since
         .exec(
@@ -54,16 +55,16 @@ app.get('/:id', (req, resp) => {
     var id = req.params.id;
 
     Post.findById(id)
-        .exec( (error, post) => { // ejecuta la query a partir de aquí
+        .exec((error, post) => { // ejecuta la query a partir de aquí
             if (error) {
                 return resp.status(500).json({
-                    ok:false,
+                    ok: false,
                     menssage: 'Error al buscar post',
                     errors: error
                 });
             }
 
-            if ( !post ) {
+            if (!post) {
                 return resp.status(400).json({
                     ok: false,
                     menssage: 'El post con id' + id + 'no existe'
@@ -71,7 +72,7 @@ app.get('/:id', (req, resp) => {
             }
 
             resp.status(200).json({
-                ok:true,
+                ok: true,
                 post: post
             });
         })
@@ -90,7 +91,7 @@ app.post('/', (request, response) => { // mando el middleware como parámetro
         title: body.title,
         intro: body.intro,
         contenido: body.contenido,
-        categoria: body.categoria, 
+        categoria: body.categoria,
         date: body.date,
         comentarios: body.comentarios,
         img: body.img
