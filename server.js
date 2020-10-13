@@ -4,11 +4,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser'); // librería para pasar la data del post en un objeto javascript
 
 
-
-
-
-
-
 // *******************************Inicializar variables(aquí es donde se usan las librerías)************************************
 const app = express();
 
@@ -56,11 +51,11 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 // ============================
 let urlDB;
 
-// if (process.env.NODE_ENV === 'dev') {
-// urlDB = 'mongodb://localhost:27017/hospitaldb';
-// } else {
-urlDB = 'mongodb+srv://admin:fPOBVD9f2d1iiPuc@cluster0.v9ttl.mongodb.net/hospitaldb'; //url que saco de mogoatlas=>connect => using mongo compass
-// }
+if (process.env.NODE_ENV === 'dev') {
+    urlDB = 'mongodb://localhost:27017/hospitaldb';
+} else {
+    urlDB = process.env.URLDB; //url que saco de mogoatlas=>connect => using mongo compass
+}
 process.env.URLDB = urlDB;
 
 
@@ -77,52 +72,10 @@ mongoose.connection.openUri(process.env.URLDB, {
     })
 
 
-//*********************************************Importar rutas que voy a usar****************************************************
-
-var appRoutes = require('./routes/app'); // el path dónde están las rutas
-
-var usuarioRoutes = require('./routes/usuario');
-
-var usuarioLogin = require('./routes/login');
-
-var hospitalRoutes = require('./routes/hospital');
-
-var medicoRoutes = require('./routes/medico');
-
-var busquedaRoutes = require('./routes/busqueda');
-
-var uploadRoutes = require('./routes/upload');
-
-var imagenesRoutes = require('./routes/imagenes');
-
-var chatRoutes = require('./routes/chat');
-
-var dateRoutes = require('./routes/date');
-
-var blogRoutes = require('./routes/blog');
-
-
-
-
-
 //************************************************************Rutas*************************************************************
 
 
-app.use('/usuario', usuarioRoutes); // se pone arriba por que si no entrarían por el de abajo
-app.use('/hospital', hospitalRoutes); // se pone arriba por que si no entrarían por el de abajo
-app.use('/medico', medicoRoutes); // se pone arriba por que si no entrarían por el de abajo
-app.use('/busqueda', busquedaRoutes); // se pone arriba por que si no entrarían por el de abajo
-app.use('/upload', uploadRoutes); // se pone arriba por que si no entrarían por el de abajo
-app.use('/img', imagenesRoutes);
-app.use('/login', usuarioLogin); // se pone arriba por que si no entrarían por el de abajo
-app.use('/chat', chatRoutes);
-app.use('/date', dateRoutes);
-app.use('/post', blogRoutes);
-app.use('/', appRoutes); // middleware. "Cualquier match con '/' , ejecuta appRoutes"
-
-
-
-
+app.use(require('./routes/index'));
 
 //****************************************************Escuchar peticiones ******************************************************
 app.listen(port, () => { console.log('Express Server corriendo en el puerto 4000:\x1b[32m%s\x1b[0m', 'running') });
