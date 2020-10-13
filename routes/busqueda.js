@@ -49,7 +49,7 @@ app.get('/coleccion/:tabla/:busqueda', (request, response) => {
 
     var busqueda = request.params.busqueda;
     var tabla = request.params.tabla;
-    var regex = new RegExp(busqueda, 'i');
+    var regex = new RegExp(busqueda, 'i'); // expresión regular, sin ser sintácticamente idéntico al término de ":busqueda"
 
     var promesa;
     switch (tabla) {
@@ -64,7 +64,7 @@ app.get('/coleccion/:tabla/:busqueda', (request, response) => {
             promesa = buscarHospitales(busqueda, regex)
             break;
         case 'blog':
-            promesa = buscarPost(busqueda,regex)
+            promesa = buscarPost(busqueda, regex)
             break;
 
         default:
