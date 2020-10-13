@@ -38,10 +38,10 @@ app.get('/renuevatoken', mdAutenticacion.verificaToken, (req, res) => {
 // ==========================================
 app.post('/google', (req, res) => {
 
-    var token = req.body.token || 'XXX';
+    let token = req.body.token || 'XXX';
 
 
-    var client = new auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_SECRET, '');
+    let client = new auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_SECRET, '');
 
     client.verifyIdToken(
         token,
@@ -85,7 +85,7 @@ app.post('/google', (req, res) => {
 
                         usuario.password = ':)';
 
-                        var token = jwt.sign({ usuario: usuario }, SEED, { expiresIn: 14400 }); // 4 horas
+                        let token = jwt.sign({ usuario: usuario }, SEED, { expiresIn: 14400 }); // 4 horas
 
                         res.status(200).json({
                             ok: true,
@@ -181,7 +181,7 @@ app.post('/', (req, res) => {
         // Crear un token!!!
         usuarioDB.password = ':)';
 
-        var token = jwt.sign({ usuario: usuarioDB }, process.env.SEED, { expiresIn: 14400 }); // 4 horas // usuario sería el payload // payload => los datos que yo quiero transformados en jwt
+        var token = jwt.sign({ usuario: usuarioDB }, SEED, { expiresIn: 14400 }); // 4 horas // usuario sería el payload // payload => los datos que yo quiero transformados en jwt
 
         res.status(200).json({
             ok: true,
