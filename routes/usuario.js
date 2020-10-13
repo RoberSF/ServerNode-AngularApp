@@ -92,7 +92,7 @@ app.put('/:id', [middlewareAutentication.verificaToken, middlewareAutentication.
         if (error) {
             return response.status(500).json({
                 ok: false,
-                mensaje: 'Error al buscar usario',
+                mensaje: 'Error al buscar usuario',
                 errors: error
             });
         }
