@@ -13,6 +13,7 @@ var imagenesRoutes = require('./imagenes');
 var chatRoutes = require('./chat');
 var dateRoutes = require('./date');
 var blogRoutes = require('./blog');
+var categoria = require('./categoria');
 
 
 
@@ -23,6 +24,7 @@ app.use('/busqueda', busquedaRoutes); // se pone arriba por que si no entrarían
 app.use('/upload', uploadRoutes); // se pone arriba por que si no entrarían por el de abajo
 app.use('/img', imagenesRoutes);
 app.use('/login', usuarioLogin); // se pone arriba por que si no entrarían por el de abajo
+app.use('/categoria', categoria);
 app.use('/chat', chatRoutes);
 app.use('/date', dateRoutes);
 app.use('/post', blogRoutes);
