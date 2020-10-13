@@ -152,7 +152,7 @@ app.post('/', (req, res) => {
 
     var body = req.body;
 
-    Usuario.findOne({ email: body.email }, (err, usuarioDB) => {
+    Usuario.findOne({ email: body.email }, (err, usuarioDB) => { //findOne => busca uno que exista tal que así
 
         if (err) {
             return res.status(500).json({
@@ -170,7 +170,7 @@ app.post('/', (req, res) => {
             });
         }
 
-        if (!bcrypt.compareSync(body.password, usuarioDB.password)) {
+        if (!bcrypt.compareSync(body.password, usuarioDB.password)) { // comparesync compara que las contraseñas encriptadas son iguales
             return res.status(400).json({
                 ok: false,
                 mensaje: 'Credenciales incorrectas - password',
@@ -181,7 +181,7 @@ app.post('/', (req, res) => {
         // Crear un token!!!
         usuarioDB.password = ':)';
 
-        var token = jwt.sign({ usuario: usuarioDB }, SEED, { expiresIn: 14400 }); // 4 horas
+        var token = jwt.sign({ usuario: usuarioDB }, process.env.SEED, { expiresIn: 14400 }); // 4 horas // usuario sería el payload // payload => los datos que yo quiero transformados en jwt
 
         res.status(200).json({
             ok: true,
@@ -209,7 +209,7 @@ function obtenerMenu(ROLE) {
                 { title: 'Drag&Drop', url: '/dragDrop' },
                 { title: 'Search Inside', url: '/buscar/:' },
                 { title: 'Photo', url: '/PhotoClick' },
-                { title: 'Blog', url:'/blog'},
+                { title: 'Blog', url: '/blog' },
                 // { title: 'Blog-post', url:'/blog-post'},
 
                 // { title: 'Promesas', url: '/promesas' },
@@ -228,7 +228,7 @@ function obtenerMenu(ROLE) {
     ]
 
     if (ROLE === 'ADMIN_ROLE') {
-        menu[1].submenu.unshift({ title: 'Usuarios', url: '/usuarios' },{ title: 'Blog-edit', url:'/blog-edit'})
+        menu[1].submenu.unshift({ title: 'Usuarios', url: '/usuarios' }, { title: 'Blog-edit', url: '/blog-edit' })
     }
 
 
