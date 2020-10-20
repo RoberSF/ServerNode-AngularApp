@@ -7,10 +7,9 @@ process.env.SEED = process.env.SEED || '@este-es-mi-seed-desarrollo';
 
 //Google
 
-// module.exports.CLIENT_ID = '912602372070-uu6j4sri55bl9b279g9hk9fvi7mh3clm.apps.googleusercontent.com';
-CLIENT_ID = '912602372070-uu6j4sri55bl9b279g9hk9fvi7mh3clm.apps.googleusercontent.com';
-// module.exports.GOOGLE_SECRET = '912602372070-uu6j4sri55bl9b279g9hk9fvi7mh3clm.apps.googleusercontent.com';
-GOOGLE_SECRET = '912602372070-uu6j4sri55bl9b279g9hk9fvi7mh3clm.apps.googleusercontent.com';
+
+CLIENT_ID = 'XXX';
+GOOGLE_SECRET = 'XXX';
 
 // Si falla igual es por tener mal puesto el module.exports
 module.exports = app;
